@@ -26,7 +26,7 @@ class Configuration:
         default=prompts.MAIN_PROMPT,
         metadata={
             "description": "The main prompt template to use for the agent's interactions. "
-            "Expects two f-string arguments: {info} and {topic}."
+            "Expects two f-string arguments: {info} and {companies}."
         },
     )
 
@@ -48,13 +48,6 @@ class Configuration:
         default=6,
         metadata={
             "description": "The maximum number of interaction loops allowed before the agent terminates."
-        },
-    )
-
-    num_search_queries: int = field(
-        default=2,
-        metadata={
-            "description": "The number of search queries to generate for web search."
         },
     )
 

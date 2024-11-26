@@ -41,9 +41,9 @@ async def call_agent_model(
         "parameters": state.extraction_schema,
     }
 
-    # Format the prompt defined in prompts.py with the extraction schema and topic
+    # Format the prompt defined in prompts.py with the extraction schema and companies
     p = configuration.prompt.format(
-        info=json.dumps(state.extraction_schema, indent=2), topic=state.topic
+        info=json.dumps(state.extraction_schema, indent=2), companies=state.companies
     )
 
     # Create the messages list with the formatted prompt and the previous messages
@@ -112,7 +112,7 @@ async def reflect(
     6. Processes the model's response and determines if the info is satisfactory.
     """
     p = prompts.MAIN_PROMPT.format(
-        info=json.dumps(state.extraction_schema, indent=2), topic=state.topic
+        info=json.dumps(state.extraction_schema, indent=2), companies=state.companies
     )
     last_message = state.messages[-1]
     if not isinstance(last_message, AIMessage):

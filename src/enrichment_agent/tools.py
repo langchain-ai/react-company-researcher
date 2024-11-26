@@ -32,18 +32,23 @@ class Queries(BaseModel):
     )   
 
 # Instructions
-query_writer_instructions = """You are a search query generator tasked with creating diverse but related search queries based on an initial query.
+query_writer_instructions = """You are a search query generator tasked with creating targeted search queries to gather specific company information.
 
-For the initial query: {initial_query}
+This list of companies: {company_list}
 
-Generate distinct search queries that:
-1. Cover different aspects or angles of the topic
-2. Are mutually exclusive to avoid redundant results
-3. Help gather comprehensive information about the subject
-4. Use different phrasings and keywords to maximize coverage
-5. Maintain relevance to the original query intent
+Generate a search query that will help gather the following information:
+<schema>
+{info}
+</schema>
 
-Each query should focus on a unique aspect while staying connected to the main topic."""
+Your query should:
+1. Focus on finding factual, up-to-date company information
+2. Target official sources, news, and reliable business databases
+3. Prioritize finding information that matches the schema requirements
+4. Include the company name and relevant business terms
+5. Be specific enough to avoid irrelevant results
+
+Create a focused query that will maximize the chances of finding schema-relevant information."""
 
 _INFO_PROMPT = """You are doing web research on behalf of a user. You need to extract specific information based on this schema:
 
@@ -99,10 +104,10 @@ async def perform_web_research(
     structured_llm = raw_model.with_structured_output(Queries)
     
     # Format system instructions
-    query_instructions = query_writer_instructions.format(initial_query=query)
+    query_instructions = query_writer_instructions.format(company_list=query, info=json.dumps(state.extraction_schema, indent=2))
 
     # Generate queries  
-    results = structured_llm.invoke([SystemMessage(content=query_instructions)]+[HumanMessage(content=f"Please generate {configuration.num_search_queries} search queries.")])
+    results = structured_llm.invoke([SystemMessage(content=query_instructions)]+[HumanMessage(content=f"Please generate a list of search queries, one for each company.")])
 
     # Search client
     tavily_async_client = AsyncTavilyClient()

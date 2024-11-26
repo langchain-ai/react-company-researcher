@@ -1,6 +1,6 @@
 """Default prompts used in this project."""
 
-MAIN_PROMPT = """You are doing web research on behalf of a user. You are trying to figure out this information:
+MAIN_PROMPT = """You are doing web research on behalf of a user. You are researching multiple companies to gather specific information:
 
 <info>
 {info}
@@ -12,6 +12,8 @@ You have access to the following tools:
 - `ScrapeWebsite`: scrape a website and get relevant notes about the given request. This will update the notes above.
 - `Info`: call this when you are done and have gathered all the relevant info
 
-Here is the information you have about the topic you are researching:
+Here is the list of companies you are researching:
 
-Topic: {topic}"""
+Companies: {companies}
+
+Please research each company systematically to gather the requested information."""

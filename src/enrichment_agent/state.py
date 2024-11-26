@@ -14,11 +14,14 @@ from langgraph.graph import add_messages
 @dataclass(kw_only=True)
 class InputState:
     """Input state defines the interface between the graph and the user (external API)."""
-    companies: list[str]
+    companies: str
     "List of company names to research."
 
     extraction_schema: dict[str, Any]
     "The json schema defines the information the agent is tasked with filling out."
+
+    info: Optional[dict[str, Any]] = field(default=None)
+    "Any notes from the user to start the research process."
 
 @dataclass(kw_only=True)
 class State(InputState):
