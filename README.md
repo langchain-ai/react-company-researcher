@@ -1,10 +1,10 @@
-# LangGraph Data Enrichment Template
+# LangGraph Compant Researcher
 
 [![CI](https://github.com/langchain-ai/data-enrichment/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/langchain-ai/data-enrichment/actions/workflows/unit-tests.yml)
 [![Integration Tests](https://github.com/langchain-ai/data-enrichment/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/langchain-ai/data-enrichment/actions/workflows/integration-tests.yml)
 [![Open in - LangGraph Studio](https://img.shields.io/badge/Open_in-LangGraph_Studio-00324d.svg?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NS4zMzMiIGhlaWdodD0iODUuMzMzIiB2ZXJzaW9uPSIxLjAiIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHBhdGggZD0iTTEzIDcuOGMtNi4zIDMuMS03LjEgNi4zLTYuOCAyNS43LjQgMjQuNi4zIDI0LjUgMjUuOSAyNC41QzU3LjUgNTggNTggNTcuNSA1OCAzMi4zIDU4IDcuMyA1Ni43IDYgMzIgNmMtMTIuOCAwLTE2LjEuMy0xOSAxLjhtMzcuNiAxNi42YzIuOCAyLjggMy40IDQuMiAzLjQgNy42cy0uNiA0LjgtMy40IDcuNkw0Ny4yIDQzSDE2LjhsLTMuNC0zLjRjLTQuOC00LjgtNC44LTEwLjQgMC0xNS4ybDMuNC0zLjRoMzAuNHoiLz48cGF0aCBkPSJNMTguOSAyNS42Yy0xLjEgMS4zLTEgMS43LjQgMi41LjkuNiAxLjcgMS44IDEuNyAyLjcgMCAxIC43IDIuOCAxLjYgNC4xIDEuNCAxLjkgMS40IDIuNS4zIDMuMi0xIC42LS42LjkgMS40LjkgMS41IDAgMi43LS41IDIuNy0xIDAtLjYgMS4xLS44IDIuNi0uNGwyLjYuNy0xLjgtMi45Yy01LjktOS4zLTkuNC0xMi4zLTExLjUtOS44TTM5IDI2YzAgMS4xLS45IDIuNS0yIDMuMi0yLjQgMS41LTIuNiAzLjQtLjUgNC4yLjguMyAyIDEuNyAyLjUgMy4xLjYgMS41IDEuNCAyLjMgMiAyIDEuNS0uOSAxLjItMy41LS40LTMuNS0yLjEgMC0yLjgtMi44LS44LTMuMyAxLjYtLjQgMS42LS41IDAtLjYtMS4xLS4xLTEuNS0uNi0xLjItMS42LjctMS43IDMuMy0yLjEgMy41LS41LjEuNS4yIDEuNi4zIDIuMiAwIC43LjkgMS40IDEuOSAxLjYgMi4xLjQgMi4zLTIuMy4yLTMuMi0uOC0uMy0yLTEuNy0yLjUtMy4xLTEuMS0zLTMtMy4zLTMtLjUiLz48L3N2Zz4=)](https://langgraph-studio.vercel.app/templates/open?githubUrl=https://github.com/langchain-ai/data-enrichment)
 
-Producing structured results (e.g., to populate a database or spreadsheet) from open-ended research (e.g., web research) is a common use case that LLM-powered agents are well-suited to handle. Here, we provide a general template for this kind of "data enrichment agent" agent using [LangGraph](https://github.com/langchain-ai/langgraph) in [LangGraph Studio](https://github.com/langchain-ai/langgraph-studio). It contains an example graph exported from `src/enrichment_agent/graph.py` that implements a research assistant capable of automatically gathering information on various topics from the web and structuring the results into a user-defined JSON format.
+Producing structured results (e.g., to populate a database or spreadsheet) from open-ended research (e.g., web research) is a common use case that LLM-powered agents are well-suited to handle. Here, we form the a general template for a "data enrichment agent" and customize it to produce structured outputs on companies. It contains an example graph exported from `src/enrichment_agent/graph.py` that implements a research assistant capable of automatically gathering information on various topics from the web and structuring the results into a user-defined JSON format.
 
 ![Overview of agent](./static/overview.png)
 
@@ -12,13 +12,13 @@ Producing structured results (e.g., to populate a database or spreadsheet) from 
 
 The enrichment agent defined in `src/enrichment_agent/graph.py` performs the following steps:
 
-1. Takes a research **topic** and requested **extraction_schema** as input.
-2. Searches the web for relevant information
+1. Takes a research list of companies**companies** and requested **extraction_schema** as input.
+2. Searches the web for relevant information of these companies in parallel
 3. Reads and extracts key details from websites
 4. Organizes the findings into the requested structured format
 5. Validates the gathered information for completeness and accuracy
 
-![Graph view in LangGraph studio UI](./static/studio.png)
+![Screenshot 2024-11-26 at 11 31 13 AM](https://github.com/user-attachments/assets/8c880382-2d41-44b7-ad42-87ed8fc899ad)
 
 ## Getting Started
 
@@ -90,38 +90,65 @@ And here is a desired extraction schema (pasted in as "`extraction_schema`"):
 {
     "type": "object",
     "properties": {
-        "companies": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "Company name"
-                    },
-                    "technologies": {
-                        "type": "string",
-                        "description": "Brief summary of key technologies used by the company"
-                    },
-                    "market_share": {
-                        "type": "string",
-                        "description": "Overview of market share for this company"
-                    },
-                    "future_outlook": {
-                        "type": "string",
-                        "description": "Brief summary of future prospects and developments in the field for this company"
-                    },
-                    "key_powers": {
-                        "type": "string",
-                        "description": "Which of the 7 Powers (Scale Economies, Network Economies, Counter Positioning, Switching Costs, Branding, Cornered Resource, Process Power) best describe this company's competitive advantage"
-                    }
+        "company_name": {
+            "type": "string",
+            "description": "Official name of the company"
+        },
+        "founding": {
+            "type": "object",
+            "properties": {
+                "year": {"type": "integer"},
+                "founders": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Names of the founding team members"
+                }
+            }
+        },
+        "product_info": {
+            "type": "object",
+            "properties": {
+                "main_product": {"type": "string"},
+                "description": {"type": "string"},
+                "key_features": {
+                    "type": "array",
+                    "items": {"type": "string"}
                 },
-                "required": ["name", "technologies", "market_share", "future_outlook"]
-            },
-            "description": "List of companies"
+                "target_users": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Primary user groups (e.g., 'ML Engineers', 'Data Scientists')"
+                }
+            }
+        },
+        "technical_details": {
+            "type": "object",
+            "properties": {
+                "programming_languages": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "open_source": {"type": "boolean"},
+                "github_repo": {"type": "string"},
+                "license_type": {"type": "string"}
+            }
+        },
+        "business_info": {
+            "type": "object",
+            "properties": {
+                "business_model": {"type": "string"},
+                "funding_status": {"type": "string"},
+                "competitors": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "key_partnerships": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                }
+            }
         }
-    },
-    "required": ["companies"]
+    }
 }
 ```
 
